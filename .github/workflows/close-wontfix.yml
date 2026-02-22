@@ -1,4 +1,4 @@
-name: Close wontfix issues
+name: Close issues labeled wontfix
 
 on:
   issues:
@@ -7,16 +7,11 @@ on:
 jobs:
   close-wontfix:
     runs-on: ubuntu-latest
-    if: github.event.label.name == 'wontfix'
     steps:
       - name: Close issue
-        uses: actions/github-script@v6
+        if: github.event.label.name == 'wontfix'
+        uses: actions-cool/issues-helper@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              state: 'closed'
-            })
+          actions: 'close-issue'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
